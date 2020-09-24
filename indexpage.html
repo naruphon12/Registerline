@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+    <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover">
+            <title>ลงทะเบียน</title>
+            <!-- <link rel="stylesheet" href="css/style.css" media="all"> -->
+            <script>
+              document.write('<link rel="stylesheet" href="css/style.css?cache=' + new Date().getTime() + '">')
+            </script>
+         
+        <style>
+            body{
+                background: blue;
+                font-family: verdana;
+                color: #fff;
+                padding: 30px;
+            }
+            h1{
+                font-size: 48px;
+                text-transform: uppercase;
+                letter-spacing:2px;
+                text-align: center;
+            }
+            p{
+                font-size: 16px;
+                text-align: center;
+            }
+        </style>    
+    </head>
+<body>
+     
+        <form>
+            <div class="imgcontainer">
+              <img id="pictureUrl" alt="Avatar" class="avatar">
+            </div>
+        
+            <div class="container">
+        
+              <label for="uname" id="displayName"><b>Username : </b> </label><br>
+              <br>
+        
+              <label for="psw" id="userId"><b>userId :</b></label><br>
+              <br>
+        
+              <label for="psw" id="email"><b>email :</b></label><br>
+              <br>
+        
+              <label for="psw" id="type"><b>Group type :</b></label><br>
+              <br>
+        
+              <label for="psw" id="ID"><b>ID :</b></label><br>
+              <br>
+        
+              <label for="phone"><b> กรุณาใส่ หมายเลขโทรศัพท์:</b></label><br>
+        
+              <br>
+              <input type="tel" id="phone" name="phone" pattern="[0-9]{10}">
+        
+              <button type="submit" onclick="Registerline()">ลงทะเบียน</button>
+              <button id="btnClose" onclick="closed()">Close</button>
+            </div>
+            <div class="container" style="background-color:#f1f1f1">
+            </div>
+          </form>
+ 
+          <p id="os" style="display:none;"><b>OS:</b> </p>
+          <p id="language" style="display:none;"><b>Language:</b> </p>
+          <p id="version" style="display:none;"><b>Version:</b> </p>
+          <p id="isInClient" style="display:none;"><b>isInClient:</b> </p>
+          <p id="accessToken" style="display:none;"><b>AccessToken:</b> </p>
+          <p id="statusMessage" style="display:none;"><b>statusMessage:</b> </p>
+          <p id="viewType" style="display:none;"><b>viewType:</b> </p>
+          <p id="utouId" style="display:none;"><b>utouId:</b> </p>
+          <p id="roomId" style="display:none;"><b>roomId:</b> </p>
+          <p id="groupId" style="display:none;"><b>groupId:</b> </p>
+          <p id="friendship" style="display:none;"><b>isFriendship:</b> </p>
+          <p id="scanCode" style="display:none;"><b>Code:</b> </p>
+          <p id="isLoggedIn" style="display:none;"><b>isLoggedIn:</b> </p>
+          <p id="universalLink1" style="display:none;"><b>Universal Link:</b> </p>
+          <p id="universalLink2" style="display:none;"><b>Universal Link with Query params:</b> </p>
+          <p><a href="liff/path/?param=9" style="display:none;">Link to Path</a></p>
+        
+        
+          <button id="btnMsg" onclick="sendMsg()" style="display:none;">Send Message</button>
+          <button id="btnShare" onclick="shareMsg()" style="display:none;">Share Target Picker</button>
+          <button onclick="openWindow()" style="display:none;">Open Window</button>
+          <button id="btnScanCode" onclick="scanCode()" style="display:none;">Scan Code</button>
+          <button id="btnLogOut" onclick="logOut()" style="display:none;">Log Out</button>
+          <!-- <button id="btnClose" onclick="closed()">Close</button> -->
+        
+          <script src="js/vconsole.min.js"></script>
+          <script>
+            var vConsole = new VConsole()
+            console.log("Hello World!")
+        
+          </script>
+        
+          <script src="callservice.js"></script>
+        
+        
+          <script src="https://static.line-scdn.net/liff/edge/versions/2.4.0/sdk.js"></script>
+          <script>
+            function createUniversalLink() {
+              const link1 = liff.permanentLink.createUrl()
+              document.getElementById("universalLink1").append(link1)
+        
+              liff.permanentLink.setExtraQueryParam('param=9')
+              const link2 = liff.permanentLink.createUrl()
+              document.getElementById("universalLink2").append(link2)
+            }
+        
+            async function shareMsg() {
+              await liff.shareTargetPicker([
+                {
+                  type: "text",
+                  text: "This message was sent by ShareTargetPicker"
+                }
+              ])
+            }
+        
+            function logOut() {
+              liff.logout()
+              window.location.reload()
+            }
+        
+            function closed() {
+              liff.closeWindow()
+            }
+        
+            async function scanCode() {
+              const result = await liff.scanCode()
+              document.getElementById("scanCode").append(result.value)
+            }
+        
+            function openWindow() {
+              liff.openWindow({
+                url: "https://line.me",
+                external: true
+              })
+            }
+        
+            async function getFriendship() {
+              const friend = await liff.getFriendship()
+              document.getElementById("friendship").append(friend.friendFlag)
+              if (!friend.friendFlag) {
+                if (confirm("คุรยังไม่ได้เพิ่ม Bot เป็นเพื่อน จะเพิ่มเลยไหม?")) {
+                  window.location = "https://line.me/R/ti/p/@119ajkrj"
+                }
+              }
+        
+            }
+        
+            async function sendMsg() {
+              if (liff.getContext().type !== "none") {
+                await liff.sendMessages([
+                  {
+                    "type": "sticker",
+                    "stickerId": 1,
+                    "packageId": 1
+                  }
+        
+                ])
+                Swal.fire(
+                  "send msg"
+                )
+        
+              }
+            }
+        
+         function getContext() {
+        
+              document.getElementById("type").append(liff.getContext().type)
+              document.getElementById("viewType").append(liff.getContext().viewType)
+              document.getElementById("utouId").append(liff.getContext().utouId)
+              document.getElementById("roomId").append(liff.getContext().roomId)
+              document.getElementById("groupId").append(liff.getContext().groupId)
+        
+              if (liff.getContext().type == "external") {
+        
+                document.getElementById("ID").append(liff.getContext().groupId)
+        
+              } else if (liff.getContext().type == "group") {
+        
+                document.getElementById("ID").append(liff.getContext().groupId)
+              } else if (liff.getContext().type == "room") {
+        
+                document.getElementById("ID").append(liff.getContext().roomId)
+              } else if (liff.getContext().type == "utou") {
+        
+                document.getElementById("ID").append(liff.getContext().utouId)
+              }
+            }
+        
+            const email = document.getElementById("email")
+            const userId = document.getElementById("userId")
+            const pictureUrl = document.getElementById("pictureUrl")
+            const displayName = document.getElementById("displayName")
+            const statusMessage = document.getElementById("statusMessage")
+        
+            async function getUserProfile() {
+              const profile = await liff.getProfile()
+              pictureUrl.src = profile.pictureUrl
+              userId.innerHTML = "<b>userId:</b> " + profile.userId
+              statusMessage.innerHTML = "<b>statusMessage:</b> " + profile.statusMessage
+              displayName.innerHTML = "<b>displayName:</b> " + profile.displayName
+              email.innerHTML = "<b>email:</b> " + liff.getDecodedIDToken().email
+            }
+        
+            function getEnvironment() {
+              document.getElementById("os").append(liff.getOS())
+              document.getElementById("language").append(liff.getLanguage())
+              document.getElementById("version").append(liff.getVersion())
+              document.getElementById("accessToken").append(liff.getAccessToken())
+              document.getElementById("isInClient").append(liff.isInClient())
+              if (liff.isInClient()) {
+                document.getElementById("btnLogOut").style.display = "none"
+              } else {
+                document.getElementById("btnMsg").style.display = "none"
+                document.getElementById("btnScanCode").style.display = "none"
+                document.getElementById("btnClose").style.display = "none"
+              }
+            }
+        
+            async function main() {
+              liff.ready.then(() => {
+                document.getElementById("isLoggedIn").append(liff.isLoggedIn())
+                if (liff.isLoggedIn()) {
+                  getEnvironment()
+                  getUserProfile()
+                  getContext()
+                  getFriendship()
+                  createUniversalLink()
+                } else {
+                  liff.login()
+                }
+              })
+              await liff.init({ liffId: "1653805513-dL6z6po1" })
+            }
+            main()
+          </script>
+        </body>
+        
+        </html>
